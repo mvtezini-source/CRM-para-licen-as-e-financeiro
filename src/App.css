@@ -29,3 +29,40 @@
 .small {
   font-size: 0.75rem;
 }
+
+/* CRM styles */
+.crm-root { font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
+.crm-nav { display:flex; justify-content:space-between; align-items:center; padding:12px 20px; background:#0b1220; color:#fff; }
+.crm-brand { font-weight:700; }
+.crm-links button { margin-left:8px; padding:6px 10px; background:transparent; border:1px solid rgba(255,255,255,0.08); color:#fff; border-radius:6px; cursor:pointer; }
+.crm-main { padding:20px; }
+.crm-card { background:#ffffff; color:#111; padding:16px; border-radius:8px; max-width:900px; margin:12px auto; box-shadow:0 6px 18px rgba(0,0,0,0.06); }
+.form-inline { display:flex; gap:8px; margin-top:12px; }
+.form-inline input, .form-inline select { padding:8px; border:1px solid #ddd; border-radius:6px; }
+.form-inline button { padding:8px 12px; border-radius:6px; background:#0b6cff; color:#fff; border:none; cursor:pointer; }
+.client-list { list-style:none; padding:0; margin-top:12px; }
+.client-item { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #f1f1f1; }
+.license-box { background:#f8fafc; padding:8px; border-radius:6px; font-size:0.9rem; }
+.notif-new { padding:8px; border-bottom:1px solid #eee; }
+.notif-read { padding:8px; border-bottom:1px solid #eee; opacity:0.6; }
+
+/* Dashboard styles */
+.crm-dashboard { max-width:1100px; margin:0 auto; }
+.crm-dashboard h2 { margin:8px 0 0 0; }
+.crm-dashboard .muted { color:#6b7280; }
+.dash-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:16px; }
+.dash-card { background:#fff; padding:16px; border-radius:10px; box-shadow:0 6px 18px rgba(0,0,0,0.04); text-align:left; }
+.card-title { font-size:0.9rem; color:#6b7280; }
+.card-value { font-size:1.6rem; font-weight:700; margin-top:6px; }
+.card-sub { color:#10b981; margin-top:8px; font-size:0.85rem; }
+
+.dash-grid { display:grid; grid-template-columns:2fr 1fr 1fr; gap:16px; margin-top:20px; }
+.dash-panel { background:#fff; border-radius:10px; box-shadow:0 6px 18px rgba(0,0,0,0.04); padding:14px; }
+.panel-body { padding:10px; min-height:140px; }
+.large-box { min-height:220px; }
+.empty { color:#9ca3af; text-align:center; padding:24px 0; }
+.notes-list { list-style:none; padding:0; margin:0; }
+.notes-list li { padding:8px 0; border-bottom:1px solid #f3f4f6; }
+
+.dash-activity { margin-top:20px; }
+
