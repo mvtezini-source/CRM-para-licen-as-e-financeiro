@@ -140,6 +140,8 @@ export default function Users() {
         role: 'Usuário Padrão',
         clientId: '',
         cpfCnpj: '',
+        password: '',
+        confirmPassword: '',
       });
       setEditingId(null);
       setShowForm(false);
@@ -158,6 +160,8 @@ export default function Users() {
       role: user.role || 'Usuário Padrão',
       clientId: '',
       cpfCnpj: '',
+      password: '',
+      confirmPassword: '',
     });
     setEditingId(user.id);
     setShowForm(true);
@@ -290,6 +294,31 @@ export default function Users() {
                   value={formData.cpfCnpj}
                   onChange={handleChange}
                   placeholder="000.000.000-00 ou 00.000.000/0000-00"
+                  className="form-input"
+                />
+              </div>
+            </div>
+
+            <div className="form-grid-2">
+              <div>
+                <label>Senha {editingId ? '(opcional)' : '*'}</label>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder={editingId ? 'Deixe em branco para manter a senha atual' : 'Min. 6 caracteres'}
+                  className="form-input"
+                />
+              </div>
+              <div>
+                <label>Confirmar Senha {editingId ? '(se preencher)' : '*'}</label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder={editingId ? 'Confirme a nova senha' : 'Digite novamente a senha'}
                   className="form-input"
                 />
               </div>
