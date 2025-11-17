@@ -461,6 +461,126 @@ app.get('/api/reports/payments', requirePermission('manage_clients'), async (req
   }
 });
 
+// Tickets endpoints
+app.get('/api/tickets', async (req, res) => {
+  try {
+    let query = 'SELECT t.*, COUNT(r.id) as reply_count FROM tickets t LEFT JOIN ticket_replies r ON t.id = r.ticketId WHERE 1=1';
+    const params = [];
+
+    if (req.query.status && req.query.status !== 'all') {
+      query += ' AND t.status = ?';
+      params.push(req.query.status);
+    }
+
+    if (req.query.priority && req.query.priority !== 'all') {
+      query += ' AND t.priority = ?';
+      params.push(req.query.priority);
+    }
+
+    query += ' GROUP BY t.id ORDER BY t.createdAt DESC';
+
+    const [tickets] = await pool.query(query, params);
+    
+    // Carregar replies para cada ticket
+    const ticketsWithReplies = await Promise.all(
+      tickets.map(async (ticket) => {
+        const [replies] = await pool.query(
+          'SELECT * FROM ticket_replies WHERE ticketId = ? ORDER BY createdAt ASC',
+          [ticket.id]
+        );
+        return { ...ticket, replies };
+      })
+    );
+
+    res.json(ticketsWithReplies);
+  } catch (err) {
+    res.status(500).json({ error: String(err) });
+  }
+});
+
+app.get('/api/tickets/:id', async (req, res) => {
+  try {
+    const [tickets] = await pool.query('SELECT * FROM tickets WHERE id = ?', [req.params.id]);
+    if (!tickets.length) return res.status(404).json({ error: 'Ticket não encontrado' });
+
+    const ticket = tickets[0];
+    const [replies] = await pool.query(
+      'SELECT * FROM ticket_replies WHERE ticketId = ? ORDER BY createdAt ASC',
+      [ticket.id]
+    );
+
+    res.json({ ...ticket, replies });
+  } catch (err) {
+    res.status(500).json({ error: String(err) });
+  }
+});
+
+app.post('/api/tickets', async (req, res) => {
+  try {
+    const { title, description, category, priority, createdBy, assignedTo, dueDate } = req.body;
+    const id = 'TKT-' + Date.now();
+
+    await pool.query(
+      'INSERT INTO tickets (id, title, description, category, priority, createdBy, assignedTo, dueDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [id, title, description, category, priority, createdBy, assignedTo, dueDate || null]
+    );
+
+    res.status(201).json({ id, title, description, category, priority, createdBy, assignedTo, dueDate, status: 'aberto', createdAt: new Date() });
+  } catch (err) {
+    res.status(500).json({ error: String(err) });
+  }
+});
+
+app.patch('/api/tickets/:id', async (req, res) => {
+  try {
+    const { status, priority, assignedTo, dueDate } = req.body;
+    const updates = [];
+    const values = [];
+
+    if (status) {
+      updates.push('status = ?');
+      values.push(status);
+    }
+    if (priority) {
+      updates.push('priority = ?');
+      values.push(priority);
+    }
+    if (assignedTo !== undefined) {
+      updates.push('assignedTo = ?');
+      values.push(assignedTo);
+    }
+    if (dueDate) {
+      updates.push('dueDate = ?');
+      values.push(dueDate);
+    }
+
+    if (updates.length === 0) return res.status(400).json({ error: 'Nenhum campo para atualizar' });
+
+    values.push(req.params.id);
+    await pool.query(`UPDATE tickets SET ${updates.join(', ')} WHERE id = ?`, values);
+
+    const [tickets] = await pool.query('SELECT * FROM tickets WHERE id = ?', [req.params.id]);
+    res.json(tickets[0]);
+  } catch (err) {
+    res.status(500).json({ error: String(err) });
+  }
+});
+
+app.post('/api/tickets/:id/replies', async (req, res) => {
+  try {
+    const { message, author } = req.body;
+
+    await pool.query(
+      'INSERT INTO ticket_replies (ticketId, author, message) VALUES (?, ?, ?)',
+      [req.params.id, author, message]
+    );
+
+    res.status(201).json({ ticketId: req.params.id, author, message, createdAt: new Date() });
+  } catch (err) {
+    res.status(500).json({ error: String(err) });
+  }
+});
+
 // Start scheduled jobs when server starts
 registerJobs();
 
