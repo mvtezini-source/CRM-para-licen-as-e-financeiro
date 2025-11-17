@@ -17,6 +17,8 @@ export default function Users() {
     role: 'Usuário Padrão',
     clientId: '',
     cpfCnpj: '',
+    password: '',
+    confirmPassword: '',
   });
 
   useEffect(() => {
@@ -58,14 +60,42 @@ export default function Users() {
         return;
       }
 
+      // Validações de senha
+      if (!editingId) {
+        // Criando novo usuário: senha obrigatória
+        if (!formData.password || formData.password.length < 6) {
+          setError('Senha é obrigatória e deve ter ao menos 6 caracteres');
+          return;
+        }
+        if (formData.password !== formData.confirmPassword) {
+          setError('Senha e confirmação não coincidem');
+          return;
+        }
+      } else {
+        // Atualizando usuário: senha opcional — se fornecida valida
+        if (formData.password) {
+          if (formData.password.length < 6) {
+            setError('Senha deve ter ao menos 6 caracteres');
+            return;
+          }
+          if (formData.password !== formData.confirmPassword) {
+            setError('Senha e confirmação não coincidem');
+            return;
+          }
+        }
+      }
+
       if (editingId) {
         // Atualizar usuário
-        await api.updateUser(editingId, {
+        const payload = {
           id: formData.id,
           name: formData.name,
           email: formData.email,
           role: formData.role,
-        });
+        };
+        if (formData.password) payload.password = formData.password;
+
+        await api.updateUser(editingId, payload);
         
         // Se tem cliente vinculado, atualizar
         if (formData.clientId) {
@@ -80,12 +110,14 @@ export default function Users() {
         }
       } else {
         // Criar novo usuário
-        await api.createUser({
+        const payload = {
           id: formData.id,
           name: formData.name,
           email: formData.email,
           role: formData.role,
-        });
+          password: formData.password,
+        };
+        await api.createUser(payload);
 
         // Vincular ao cliente se especificado
         if (formData.clientId) {
