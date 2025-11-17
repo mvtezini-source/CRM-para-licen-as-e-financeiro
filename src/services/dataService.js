@@ -42,6 +42,18 @@ function addPlan(plan) {
   addNotification(`Plano criado: ${plan.name}`);
 }
 
+function updatePlan(id, updates) {
+  const plans = getPlans().map(p => (p.id === id ? { ...p, ...updates } : p));
+  write(PLANS_KEY, plans);
+  addNotification(`Plano atualizado: ${updates.name}`);
+}
+
+function deletePlan(id) {
+  const plans = getPlans().filter(p => p.id !== id);
+  write(PLANS_KEY, plans);
+  addNotification(`Plano removido`);
+}
+
 function getClients() {
   return read(CLIENTS_KEY, []);
 }
@@ -95,12 +107,29 @@ function markNotificationRead(id) {
   write(NOTIF_KEY, notifs);
 }
 
+function linkUserToClient(clientId, userDoc) {
+  const clients = getClients();
+  const client = clients.find(c => c.id === clientId);
+  if (client) {
+    if (!client.users) client.users = [];
+    // Remove se já existe
+    client.users = client.users.filter(u => u.userId !== userDoc.userId);
+    // Adiciona novo
+    client.users.push(userDoc);
+    updateClient(client);
+    addNotification(`Usuário vinculado ao cliente ${client.name}`);
+  }
+}
+
 export default {
   getPlans,
   addPlan,
+  updatePlan,
+  deletePlan,
   getClients,
   addClient,
   createLicense,
   getNotifications,
   markNotificationRead,
+  linkUserToClient,
 };
