@@ -8,6 +8,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { signTokenForUser } from './auth.js';
 import * as paymentService from './asaas.js';
+import * as reportsService from './reports.js';
 
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
@@ -404,6 +405,57 @@ app.get('/api/payments/:paymentId/status', async (req, res) => {
     }
 
     res.json(payment);
+  } catch (err) {
+    res.status(500).json({ error: String(err) });
+  }
+});
+
+// Reports endpoints
+app.get('/api/reports/revenue', requirePermission('manage_clients'), async (req, res) => {
+  try {
+    const period = req.query.period || 'month';
+    const data = await reportsService.getRevenueReport(period);
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: String(err) });
+  }
+});
+
+app.get('/api/reports/churn', requirePermission('manage_clients'), async (req, res) => {
+  try {
+    const period = req.query.period || 'month';
+    const data = await reportsService.getChurnReport(period);
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: String(err) });
+  }
+});
+
+app.get('/api/reports/forecasting', requirePermission('manage_clients'), async (req, res) => {
+  try {
+    const period = req.query.period || 'month';
+    const data = await reportsService.getForecastReport(period);
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: String(err) });
+  }
+});
+
+app.get('/api/reports/licenses', requirePermission('manage_clients'), async (req, res) => {
+  try {
+    const period = req.query.period || 'month';
+    const data = await reportsService.getLicensesReport(period);
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: String(err) });
+  }
+});
+
+app.get('/api/reports/payments', requirePermission('manage_clients'), async (req, res) => {
+  try {
+    const period = req.query.period || 'month';
+    const data = await reportsService.getPaymentsReport(period);
+    res.json(data);
   } catch (err) {
     res.status(500).json({ error: String(err) });
   }

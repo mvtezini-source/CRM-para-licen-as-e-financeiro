@@ -9,6 +9,7 @@ import SystemAdmin from './components/SystemAdmin';
 import Users from './components/Users';
 import Permissions from './components/Permissions';
 import Financial from './components/Financial';
+import Reports from './components/Reports';
 import Login from './components/Login';
 import Register from './components/Register';
 import api, { getCurrentUser, setUserId, logout } from './services/apiService';
@@ -75,6 +76,7 @@ function App() {
           <button onClick={() => setView('notifications')}>Notificações</button>
           <button onClick={() => setView('licenses')}>Licenças</button>
           <button onClick={() => setView('financial')}>Financeiro</button>
+          <button onClick={() => setView('reports')}>📊 Relatórios</button>
           <button onClick={() => setView('admin')}>Administração</button>
            </div>
         <div style={{display:'flex', gap:8, alignItems:'center'}}>
@@ -96,6 +98,7 @@ function App() {
         {view === 'users' && <Users />}
         {view === 'permissions' && <Permissions />}
         {view === 'financial' && <Financial />}
+        {view === 'reports' && <Reports />}
         {view === 'admin' && <SystemAdmin />}
       </main>
     </div>
