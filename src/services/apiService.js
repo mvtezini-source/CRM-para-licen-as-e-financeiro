@@ -1,6 +1,8 @@
 import dataService from './dataService';
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:4000/api';
+// Detectar se está em desenvolvimento ou produção
+const isDev = import.meta.env.DEV;
+const API_BASE = isDev ? '/api' : (import.meta.env.VITE_API_BASE || 'http://localhost:4000/api');
 
 let currentUserId = import.meta.env.VITE_USER_ID || null;
 export function setUserId(id){ currentUserId = id; }
