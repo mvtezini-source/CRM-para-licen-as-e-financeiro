@@ -121,11 +121,7 @@ export default function Login({ onLogin, onRegister }) {
         </div>
       </div>
 
-      <div style={{marginTop:'20px', padding:'16px', backgroundColor:'#e7f3ff', borderRadius:'6px', fontSize:'12px', color:'#004085'}}>
-        <strong>👨‍💼 Usuário teste:</strong><br/>
-        Usuário: <code>admin</code><br/>
-        Senha: <code>senha123</code>
-      </div>
+      {/* Credenciais de teste removidas por segurança */}
     </div>
   );
 }
